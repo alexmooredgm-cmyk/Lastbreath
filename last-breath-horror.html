@@ -2,521 +2,382 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arcade Zone - Free HTML5 Games</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LAST BREATH</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-7375761383788184~9230735449" crossorigin="anonymous"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --blood: #8b0000;
+    --blood-bright: #cc0000;
+    --flesh: #1a0a0a;
+    --fog: rgba(10,0,0,0.85);
+    --gold: #c9a84c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
 
   body {
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-    font-family: 'Exo 2', sans-serif;
-    color: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Animated background particles */
-  .particles {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: 
-      radial-gradient(circle at 20% 50%, rgba(120, 0, 255, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(0, 200, 255, 0.1) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* Header */
-  header {
-    position: relative;
-    z-index: 10;
-    padding: 30px 0;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(10px);
-    border-bottom: 2px solid rgba(255,255,255,0.1);
-  }
-
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 36px;
-    font-weight: 900;
-    background: linear-gradient(90deg, #00d4ff, #9d00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-    letter-spacing: 2px;
-  }
-
-  nav {
-    display: flex;
-    gap: 30px;
-  }
-
-  nav a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 8px 0;
-    position: relative;
-    transition: color 0.3s;
-  }
-
-  nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #00d4ff, #9d00ff);
-    transform: scaleX(0);
-    transition: transform 0.3s;
-  }
-
-  nav a:hover { color: #00d4ff; }
-  nav a:hover::after { transform: scaleX(1); }
-
-  /* Hero section */
-  .hero {
-    position: relative;
-    z-index: 5;
-    max-width: 1200px;
-    margin: 60px auto 40px;
-    padding: 0 20px;
-    text-align: center;
-  }
-
-  .hero h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 56px;
-    font-weight: 900;
-    margin-bottom: 16px;
-    text-shadow: 0 0 40px rgba(157, 0, 255, 0.6);
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow {
-    from { text-shadow: 0 0 20px rgba(157, 0, 255, 0.4); }
-    to { text-shadow: 0 0 40px rgba(157, 0, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.4); }
-  }
-
-  .hero p {
-    font-size: 18px;
-    color: #aaa;
-    max-width: 600px;
-    margin: 0 auto 30px;
-    line-height: 1.6;
-  }
-
-  .search-bar {
-    max-width: 500px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .search-bar input {
-    width: 100%;
-    padding: 16px 24px;
-    background: rgba(255,255,255,0.05);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 50px;
-    color: #fff;
-    font-size: 16px;
-    font-family: 'Exo 2', sans-serif;
-    outline: none;
-    transition: all 0.3s;
-  }
-
-  .search-bar input:focus {
-    border-color: #00d4ff;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-  }
-
-  .search-bar input::placeholder { color: #666; }
-
-  /* Games grid */
-  .games-container {
-    position: relative;
-    z-index: 5;
-    max-width: 1200px;
-    margin: 60px auto;
-    padding: 0 20px;
-  }
-
-  .category-section {
-    margin-bottom: 60px;
-  }
-
-  .category-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-    gap: 16px;
-  }
-
-  .category-header h2 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-  }
-
-  .category-header .line {
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent);
-  }
-
-  .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 30px;
-  }
-
-  .game-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
+    background: #000;
+    font-family: 'Special Elite', cursive;
+    color: #ddd;
     overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-  }
-
-  .game-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(157,0,255,0.1), rgba(0,212,255,0.1));
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .game-card:hover {
-    transform: translateY(-8px);
-    border-color: rgba(0, 212, 255, 0.5);
-    box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
-  }
-
-  .game-card:hover::before { opacity: 1; }
-
-  .game-thumb {
-    position: relative;
-    width: 100%;
-    height: 180px;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    height: 100vh;
+    width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 64px;
+  }
+
+  #game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 640px;
+    max-height: 640px;
     overflow: hidden;
+    border: 2px solid #330000;
+    box-shadow: 0 0 60px rgba(139,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.9);
   }
 
-  .game-thumb::after {
-    content: 'PLAY';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: #00d4ff;
-    opacity: 0;
-    transition: opacity 0.3s;
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* ── HUD ── */
+  #hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    pointer-events: none; z-index: 10;
+  }
+  #hud .stat { font-size: 13px; color: #aaa; letter-spacing: 1px; }
+  #hud .stat span { color: var(--gold); font-size: 16px; }
+  #level-badge {
+    font-family: 'Creepster', cursive;
+    font-size: 20px; color: var(--blood-bright);
+    text-shadow: 0 0 10px var(--blood);
   }
 
-  .game-card:hover .game-thumb::after { opacity: 1; }
+  /* ── HEARTBEAT bar ── */
+  #heartbar-wrap {
+    position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px; z-index: 10; pointer-events: none;
+  }
+  #heartbar { width: 140px; height: 6px; background: #1a0000; border-radius: 3px; overflow: hidden; }
+  #heartbar-fill { height: 100%; width: 0%; background: var(--blood-bright); transition: width 0.3s, background 0.3s; border-radius: 3px; }
+  #heart-icon { font-size: 18px; animation: none; }
+  @keyframes heartpulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
 
-  .game-info {
+  /* ── VIGNETTE / flicker ── */
+  #vignette {
+    position: absolute; inset: 0; pointer-events: none; z-index: 5;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%);
+    animation: flicker 4s infinite;
+  }
+  @keyframes flicker {
+    0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:0.7} 94%{opacity:1} 97%{opacity:0.85} 98%{opacity:1}
+  }
+
+  /* ── OVERLAYS ── */
+  .overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; z-index: 20;
+    background: rgba(0,0,0,0.92);
+    animation: fadeIn 0.4s ease;
     padding: 20px;
-    position: relative;
-    z-index: 2;
   }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-  .game-info h3 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
-    margin-bottom: 8px;
-    color: #fff;
-  }
+  .overlay.blood-overlay { background: radial-gradient(ellipse, rgba(80,0,0,0.95) 0%, rgba(0,0,0,0.97) 100%); }
 
-  .game-info p {
-    font-size: 13px;
-    color: #888;
-    line-height: 1.5;
-    margin-bottom: 12px;
-  }
-
-  .game-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .tag {
-    background: rgba(157,0,255,0.2);
-    border: 1px solid rgba(157,0,255,0.4);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    color: #c084fc;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Footer */
-  footer {
-    position: relative;
-    z-index: 5;
-    margin-top: 100px;
-    padding: 40px 20px;
-    background: rgba(0,0,0,0.4);
-    border-top: 1px solid rgba(255,255,255,0.1);
+  .overlay h1 {
+    font-family: 'Creepster', cursive;
+    font-size: 48px; color: var(--blood-bright);
+    text-shadow: 0 0 30px var(--blood), 0 0 60px rgba(139,0,0,0.5);
+    letter-spacing: 4px; margin-bottom: 8px;
     text-align: center;
   }
+  .overlay h2 {
+    font-family: 'Creepster', cursive;
+    font-size: 32px; color: #cc3333;
+    text-shadow: 0 0 15px var(--blood); margin-bottom: 20px;
+  }
+  .overlay p { font-size: 14px; color: #888; margin-bottom: 6px; max-width: 380px; text-align: center; line-height: 1.6; }
+  .overlay .score-display { font-size: 18px; color: var(--gold); margin: 12px 0; }
 
-  footer p {
+  .btn {
+    margin-top: 16px; padding: 12px 32px;
+    font-family: 'Special Elite', cursive; font-size: 16px; letter-spacing: 2px;
+    border: none; cursor: pointer; border-radius: 2px;
+    transition: all 0.2s; text-transform: uppercase;
+    min-width: 200px;
+  }
+  .btn-red {
+    background: var(--blood); color: #fff;
+    box-shadow: 0 0 20px rgba(139,0,0,0.6);
+  }
+  .btn-red:hover, .btn-red:active { background: var(--blood-bright); box-shadow: 0 0 30px rgba(200,0,0,0.8); transform: scale(1.03); }
+  .btn-ad {
+    background: #1a1a00; color: var(--gold); border: 1px solid var(--gold);
+    box-shadow: 0 0 15px rgba(201,168,76,0.3);
+  }
+  .btn-ad:hover, .btn-ad:active { background: #2a2a00; box-shadow: 0 0 25px rgba(201,168,76,0.5); transform: scale(1.03); }
+  .btn-ad:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  #controls-hint {
+    position: absolute; bottom: 28px; right: 12px;
+    font-size: 11px; color: #444; pointer-events: none; z-index: 10;
+    line-height: 1.7;
+  }
+
+  /* Ad watching simulation */
+  #ad-progress-wrap { width: 260px; margin-top: 10px; display: none; }
+  #ad-bar { height: 8px; background: #111; border-radius: 4px; overflow: hidden; }
+  #ad-fill { height: 100%; width: 0%; background: var(--gold); transition: width 0.1s linear; }
+  #ad-label { font-size: 12px; color: #777; text-align: center; margin-top: 4px; }
+
+  /* blood splatter */
+  .splat {
+    position: absolute; border-radius: 50%; background: var(--blood);
+    animation: splatAnim 0.5s ease-out forwards; pointer-events: none; z-index: 15;
+  }
+  @keyframes splatAnim {
+    0%{transform:scale(0);opacity:1} 60%{opacity:0.8} 100%{transform:scale(1);opacity:0}
+  }
+
+  /* level-up flash */
+  #level-flash {
+    position: absolute; inset: 0; background: rgba(139,0,0,0.3);
+    z-index: 18; pointer-events: none; display: none;
+    animation: none;
+  }
+  @keyframes flashAnim { 0%,100%{opacity:0} 50%{opacity:1} }
+  
+  /* AdMob ad container */
+  #admob-ad-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 30;
+    display: none;
+    background: rgba(0,0,0,0.95);
+    padding: 20px;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 30px rgba(201,168,76,0.5);
+  }
+
+  /* ── JOYSTICK ── */
+  #joystick-zone {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 120px;
+    height: 120px;
+    z-index: 15;
+    display: none;
+  }
+  
+  #joystick-base {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(139, 0, 0, 0.2);
+    border: 2px solid rgba(139, 0, 0, 0.5);
+  }
+  
+  #joystick-knob {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,0,0,0.8) 0%, rgba(139,0,0,0.9) 100%);
+    border: 2px solid rgba(255,100,100,0.5);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px rgba(200,0,0,0.6);
+    transition: transform 0.1s;
+  }
+  
+  #joystick-knob.active {
+    background: radial-gradient(circle, rgba(255,50,50,0.9) 0%, rgba(200,0,0,1) 100%);
+    box-shadow: 0 0 30px rgba(255,0,0,0.8);
+  }
+
+  /* Touch controls hint */
+  #touch-hint {
+    position: absolute;
+    bottom: 150px;
+    left: 20px;
+    font-size: 10px;
     color: #666;
-    font-size: 14px;
+    z-index: 10;
+    pointer-events: none;
+    display: none;
   }
 
-  footer a {
-    color: #00d4ff;
-    text-decoration: none;
-  }
-
-  footer a:hover { text-decoration: underline; }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .hero h1 { font-size: 36px; }
-    .logo { font-size: 28px; }
-    nav { display: none; }
-    .games-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  /* Mobile responsive adjustments */
+  @media (max-width: 640px) {
+    #game-container {
+      border: none;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    #joystick-zone {
+      display: block;
+    }
+    
+    #touch-hint {
+      display: block;
+    }
+    
+    #controls-hint {
+      display: none;
+    }
+    
+    .overlay h1 {
+      font-size: 36px;
+    }
+    
+    .btn {
+      padding: 16px 40px;
+      font-size: 18px;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="particles"></div>
+<div id="game-container">
+  <canvas id="canvas" width="640" height="640"></canvas>
 
-<header>
-  <div class="header-content">
-    <div class="logo">⚡ ARCADE ZONE</div>
-    <nav>
-      <a href="#action">Action</a>
-      <a href="#puzzle">Puzzle</a>
-      <a href="#horror">Horror</a>
-      <a href="#arcade">Arcade</a>
-    </nav>
+  <!-- HUD -->
+  <div id="hud">
+    <div class="stat">SCORE <span id="score-display">0</span></div>
+    <div id="level-badge">LEVEL <span id="level-display">1</span></div>
+    <div class="stat">BEST <span id="best-display">0</span></div>
   </div>
-</header>
 
-<section class="hero">
-  <h1>Play Free HTML5 Games</h1>
-  <p>Instant play. No downloads. Just pure gaming fun straight from your browser.</p>
-  <div class="search-bar">
-    <input type="text" id="search" placeholder="Search for games...">
+  <!-- heartbeat -->
+  <div id="heartbar-wrap">
+    <span id="heart-icon">🖤</span>
+    <div id="heartbar"><div id="heartbar-fill"></div></div>
   </div>
-</section>
 
-<main class="games-container">
+  <div id="controls-hint">WASD / Arrow Keys</div>
+  <div id="touch-hint">DRAG TO MOVE</div>
+  <div id="vignette"></div>
+  <div id="level-flash"></div>
+
+  <!-- Joystick -->
+  <div id="joystick-zone">
+    <div id="joystick-base"></div>
+    <div id="joystick-knob"></div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div class="overlay" id="start-screen">
+    <h1>LAST BREATH</h1>
+    <p>You are trapped. It is hunting you.<br>Collect the key 🗝 and reach the exit 🚪 before it finds you.</p>
+    <p style="margin-top:8px; color:#555;">Each level, it grows faster. You will not escape forever.</p>
+    <p style="margin-top:12px; color:#666; font-size:12px;">Desktop: WASD / Arrows<br>Mobile: Touch joystick</p>
+    <button class="btn btn-red" onclick="startGame()">ENTER THE DARK</button>
+  </div>
+
+  <!-- DEATH SCREEN -->
+  <div class="overlay blood-overlay" id="death-screen" style="display:none">
+    <h2>YOU DIED</h2>
+    <div class="score-display">Score: <span id="death-score">0</span></div>
+    <div id="ad-progress-wrap">
+      <div id="ad-bar"><div id="ad-fill"></div></div>
+      <div id="ad-label">Loading ad...</div>
+    </div>
+    <button class="btn btn-ad" id="revive-btn" onclick="watchAd()">📺 Watch Ad to Revive</button>
+    <button class="btn btn-red" style="margin-top:8px" onclick="restartGame()">RESTART</button>
+    <p style="margin-top:16px; font-size:12px; color:#444;">High Score: <span id="hs-display" style="color:#c9a84c">0</span></p>
+  </div>
+
+  <!-- WIN SCREEN -->
+  <div class="overlay" id="win-screen" style="display:none">
+    <h2 style="color:#c9a84c; text-shadow:0 0 20px gold">ESCAPED!</h2>
+    <div class="score-display">Score: <span id="win-score">0</span></div>
+    <p>It will be closer next time...</p>
+    <button class="btn btn-red" onclick="nextLevel()">DESCEND DEEPER</button>
+  </div>
   
-  <!-- HORROR GAMES -->
-  <section class="category-section" id="horror">
-    <div class="category-header">
-      <h2>👁️ Horror Games</h2>
-      <div class="line"></div>
-    </div>
-    <div class="games-grid">
-      
-      <div class="game-card" onclick="window.open('last-breath-horror.html', '_blank')">
-        <div class="game-thumb">👁️</div>
-        <div class="game-info">
-          <h3>LAST BREATH</h3>
-          <p>Survive the maze. The monster is hunting you. Find the key, reach the exit.</p>
-          <div class="game-tags">
-            <span class="tag">Horror</span>
-            <span class="tag">Survival</span>
-            <span class="tag">Maze</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="game-card">
-        <div class="game-thumb">🕯️</div>
-        <div class="game-info">
-          <h3>CANDLELIGHT</h3>
-          <p>Coming soon... Keep your candle lit while shadows chase you.</p>
-          <div class="game-tags">
-            <span class="tag">Horror</span>
-            <span class="tag">Stealth</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ACTION GAMES -->
-  <section class="category-section" id="action">
-    <div class="category-header">
-      <h2>⚔️ Action Games</h2>
-      <div class="line"></div>
-    </div>
-    <div class="games-grid">
-      
-      <div class="game-card">
-        <div class="game-thumb">🎯</div>
-        <div class="game-info">
-          <h3>RAPID FIRE</h3>
-          <p>Coming soon... Test your reflexes in this fast-paced shooter.</p>
-          <div class="game-tags">
-            <span class="tag">Action</span>
-            <span class="tag">Shooter</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="game-card">
-        <div class="game-thumb">🥊</div>
-        <div class="game-info">
-          <h3>BRAWLER</h3>
-          <p>Coming soon... Beat 'em up arcade action.</p>
-          <div class="game-tags">
-            <span class="tag">Action</span>
-            <span class="tag">Fighting</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- PUZZLE GAMES -->
-  <section class="category-section" id="puzzle">
-    <div class="category-header">
-      <h2>🧩 Puzzle Games</h2>
-      <div class="line"></div>
-    </div>
-    <div class="games-grid">
-      
-      <div class="game-card">
-        <div class="game-thumb">🎲</div>
-        <div class="game-info">
-          <h3>BLOCK MASTER</h3>
-          <p>Coming soon... Match blocks and clear the board.</p>
-          <div class="game-tags">
-            <span class="tag">Puzzle</span>
-            <span class="tag">Match-3</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="game-card">
-        <div class="game-thumb">🧠</div>
-        <div class="game-info">
-          <h3>BRAIN TEASER</h3>
-          <p>Coming soon... Mind-bending logic puzzles.</p>
-          <div class="game-tags">
-            <span class="tag">Puzzle</span>
-            <span class="tag">Logic</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ARCADE GAMES -->
-  <section class="category-section" id="arcade">
-    <div class="category-header">
-      <h2>🕹️ Arcade Classics</h2>
-      <div class="line"></div>
-    </div>
-    <div class="games-grid">
-      
-      <div class="game-card">
-        <div class="game-thumb">🐍</div>
-        <div class="game-info">
-          <h3>SNAKE NEON</h3>
-          <p>Coming soon... Classic snake with a neon twist.</p>
-          <div class="game-tags">
-            <span class="tag">Arcade</span>
-            <span class="tag">Classic</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="game-card">
-        <div class="game-thumb">🚀</div>
-        <div class="game-info">
-          <h3>ASTEROID RUNNER</h3>
-          <p>Coming soon... Dodge asteroids at lightspeed.</p>
-          <div class="game-tags">
-            <span class="tag">Arcade</span>
-            <span class="tag">Space</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <p>&copy; 2026 Arcade Zone. All games are free to play. Built with HTML5. <a href="https://github.com/yourusername/arcade-zone" target="_blank">View on GitHub</a></p>
-</footer>
+  <!-- AdMob Ad Container -->
+  <div id="admob-ad-container">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-app-pub-7375761383788184~9230735449"
+         data-ad-slot="2912739104"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <button class="btn btn-red" onclick="closeAdAndRevive()" style="margin-top:10px; display:none;" id="close-ad-btn">Continue</button>
+  </div>
+</div>
 
 <script>
-// Search functionality
-const searchInput = document.getElementById('search');
-const gameCards = document.querySelectorAll('.game-card');
+// ─────────────────────────────────────────────
+// AUDIO ENGINE
+// ─────────────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
 
-searchInput.addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase();
-  
-  gameCards.forEach(card => {
-    const title = card.querySelector('h3').textContent.toLowerCase();
-    const desc = card.querySelector('p').textContent.toLowerCase();
-    const tags = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent.toLowerCase()).join(' ');
-    
-    if (title.includes(query) || desc.includes(query) || tags.includes(query)) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-});
+function getACtx() {
+  if (!actx) actx = new AudioCtx();
+  return actx;
+}
 
-// Smooth scroll for nav links
-document.querySelectorAll('nav a').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const target = document.querySelector(link.getAttribute('href'));
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-</script>
+function playTone(freq, type, dur, vol=0.15, startTime=0) {
+  try {
+    const ctx = getACtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, ctx.currentTime + startTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + dur);
+    o.start(ctx.currentTime + startTime);
+    o.stop(ctx.currentTime + startTime + dur);
+  } catch(e){}
+}
 
-</body>
-</html>
-40;
+function playHeartbeat(rate) {
+  const delay = 0.05 + (1 - rate) * 0.7;
+  playTone(60, 'sine', 0.08, 0.25);
+  setTimeout(() => playTone(55, 'sine', 0.07, 0.2), 120);
+  setTimeout(() => {
+    if (gameRunning) playHeartbeat(proximityRatio);
+  }, delay * 1000);
+}
+let heartbeatRunning = false;
+
+function playStep() { playTone(80 + Math.random()*20, 'triangle', 0.05, 0.08); }
+function playKeyPickup() {
+  [400,600,800].forEach((f,i) => playTone(f, 'sine', 0.15, 0.2, i*0.08));
+}
+function playScream() {
+  [300,150,80].forEach((f,i) => playTone(f, 'sawtooth', 0.4, 0.3, i*0.1));
+}
+function playSuccess() {
+  [523,659,784,1047].forEach((f,i) => playTone(f, 'sine', 0.2, 0.2, i*0.12));
+}
+function playMonsterGrowl() {
+  playTone(40 + Math.random()*20, 'sawtooth', 0.3, 0.15);
+}
+
+// ─────────────────────────────────────────────
+// GAME STATE
+// ─────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const TILE = 40;
 const COLS = 16, ROWS = 16;
 const W = COLS * TILE, H = ROWS * TILE;
 
@@ -698,6 +559,41 @@ function generateMaze() {
 }
 
 // ─────────────────────────────────────────────
+// RESPAWN EXIT AND MONSTER (when key is picked up)
+// ─────────────────────────────────────────────
+function respawnExitAndMonster() {
+  // Get all open pathway cells
+  const opens = [];
+  for (let r=1; r<ROWS-1; r++) {
+    for (let c=1; c<COLS-1; c++) {
+      if (maze[r][c] === 0 && !(r === player.y && c === player.x)) {
+        opens.push({x:c, y:r});
+      }
+    }
+  }
+  
+  if (opens.length < 2) return; // Not enough space to respawn both
+  
+  // Randomly select exit position
+  const exitIndex = Math.floor(Math.random() * opens.length);
+  exitPos = opens[exitIndex];
+  
+  // Remove selected exit from available positions
+  opens.splice(exitIndex, 1);
+  
+  // Randomly select monster position from remaining cells
+  const monsterIndex = Math.floor(Math.random() * opens.length);
+  const newMonsterPos = opens[monsterIndex];
+  monster.x = newMonsterPos.x;
+  monster.y = newMonsterPos.y;
+  monster.fx = newMonsterPos.x * TILE;
+  monster.fy = newMonsterPos.y * TILE;
+  
+  // Play a dramatic sound to alert the player
+  playMonsterGrowl();
+}
+
+// ─────────────────────────────────────────────
 // PATHFINDING (BFS for monster)
 // ─────────────────────────────────────────────
 function bfsPath(sx, sy, tx, ty) {
@@ -782,6 +678,7 @@ function update(dt) {
 
         if (!hasKey && player.x===keyPos.x && player.y===keyPos.y) {
           hasKey=true; score+=50; playKeyPickup();
+          respawnExitAndMonster(); // ← NEW: Respawn exit and monster!
         }
         if (hasKey && player.x===exitPos.x && player.y===exitPos.y) {
           winLevel();
@@ -977,19 +874,16 @@ let rewardedAd = null;
 let adRewardEarned = false;
 let adLoading = false;
 
-// Initialize AdMob when API is ready
 window.addEventListener('load', () => {
   if (typeof google !== 'undefined' && google.ima) {
     initAdMob();
   } else {
-    // Fallback: AdMob not loaded, use simulation
     console.log('AdMob not available, using simulation mode');
   }
 });
 
 function initAdMob() {
   try {
-    // Check for AdMob API
     if (typeof adsbygoogle !== 'undefined') {
       console.log('AdMob initialized');
       loadRewardedAd();
@@ -1004,7 +898,6 @@ function loadRewardedAd() {
   adLoading = true;
   
   try {
-    // Request rewarded ad
     (adsbygoogle = window.adsbygoogle || []).push({
       google_ad_client: "ca-app-pub-7375761383788184~9230735449",
       google_ad_slot: "2912739104",
@@ -1012,7 +905,6 @@ function loadRewardedAd() {
       google_full_width_responsive: true
     });
     
-    // Set up event listeners
     setupAdMobListeners();
   } catch (e) {
     console.error('Ad load error:', e);
@@ -1021,7 +913,6 @@ function loadRewardedAd() {
 }
 
 function setupAdMobListeners() {
-  // Rewarded ad event handlers
   window.addEventListener('admob.rewarded.loaded', () => {
     console.log('Rewarded ad loaded');
     adLoading = false;
@@ -1030,7 +921,7 @@ function setupAdMobListeners() {
   
   window.addEventListener('admob.rewarded.opened', () => {
     console.log('Rewarded ad opened');
-    gameRunning = false; // Pause game while ad is showing
+    gameRunning = false;
   });
   
   window.addEventListener('admob.rewarded.closed', () => {
@@ -1038,12 +929,11 @@ function setupAdMobListeners() {
     if (adRewardEarned) {
       closeAdAndRevive();
     } else {
-      // User closed ad without reward
       document.getElementById('ad-progress-wrap').style.display = 'none';
       document.getElementById('revive-btn').disabled = false;
       document.getElementById('revive-btn').textContent = '📺 Watch Ad to Revive';
     }
-    loadRewardedAd(); // Preload next ad
+    loadRewardedAd();
   });
   
   window.addEventListener('admob.rewarded.rewarded', (event) => {
@@ -1054,7 +944,6 @@ function setupAdMobListeners() {
   window.addEventListener('admob.rewarded.error', (error) => {
     console.error('Ad error:', error);
     adLoading = false;
-    // Fallback to simulation
     simulateAd();
   });
 }
@@ -1065,7 +954,6 @@ function watchAd() {
   const btn = document.getElementById('revive-btn');
   btn.disabled = true;
   
-  // Show loading UI
   const wrap = document.getElementById('ad-progress-wrap');
   const fill = document.getElementById('ad-fill');
   const label = document.getElementById('ad-label');
@@ -1074,10 +962,8 @@ function watchAd() {
   fill.style.width = '0%';
   label.textContent = 'Loading rewarded ad...';
   
-  // Try to show real AdMob ad
   if (typeof adsbygoogle !== 'undefined' && rewardedAd) {
     try {
-      // Trigger ad display
       (adsbygoogle = window.adsbygoogle || []).push({
         google_ad_client: "ca-app-pub-7375761383788184~9230735449",
         google_ad_slot: "2912739104"
@@ -1087,13 +973,11 @@ function watchAd() {
       simulateAd();
     }
   } else {
-    // No ad loaded, use simulation
     simulateAd();
   }
 }
 
 function simulateAd() {
-  // Simulated ad for testing/fallback
   const fill = document.getElementById('ad-fill');
   const label = document.getElementById('ad-label');
   
@@ -1118,7 +1002,6 @@ function simulateAd() {
 function closeAdAndRevive() {
   if (!adRewardEarned) return;
   
-  // Hide all ad UI
   document.getElementById('admob-ad-container').style.display = 'none';
   document.getElementById('death-screen').style.display = 'none';
   document.getElementById('ad-progress-wrap').style.display = 'none';
@@ -1127,7 +1010,6 @@ function closeAdAndRevive() {
   adRewardEarned = false;
   rewardedAd = null;
   
-  // Revive player
   player = {x: 1, y: 1};
   monster = {x: COLS-2, y: ROWS-2, fx: (COLS-2)*TILE, fy: (ROWS-2)*TILE};
   gameRunning = true;
@@ -1136,7 +1018,6 @@ function closeAdAndRevive() {
   playHeartbeat(0);
   requestAnimationFrame(loop);
   
-  // Preload next ad
   setTimeout(loadRewardedAd, 1000);
 }
 
@@ -1157,11 +1038,9 @@ function spawnSplatters() {
   }
 }
 
-// Handle resize
 window.addEventListener('resize', () => {
   initJoystick();
 });
 </script>
 </body>
 </html>
-
