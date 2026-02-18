@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BRAIN TEASER · LOGIC PUZZLES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #2c3e50 0%, #34495e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 12px;
+        }
+
+        .game-wrapper {
+            max-width: 700px;
+            width: 100%;
+            background: #ecf0f1;
+            border-radius: 60px 60px 40px 40px;
+            padding: 25px 20px 30px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3), 0 0 0 4px #f1c40f inset, 0 0 0 8px #2c3e50 inset;
+        }
+
+        .gold-header {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #f1c40f;
+            text-shadow: 4px 4px 0 #2c3e50, 8px 8px 0 #95a5a6;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .level-bar {
+            background: #34495e;
+            border-radius: 40px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 4px solid #f1c40f;
+        }
+
+        .level-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .level-num {
+            background: #f1c40f;
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 40px;
+        }
+
+        .puzzle-type {
+            color: #ecf0f1;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+
+        .stars {
+            display: flex;
+            gap: 8px;
+        }
+
+        .star {
+            font-size: 2.5rem;
+            color: #7f8c8d;
+        }
+
+        .star.active {
+            color: #f1c40f;
+            text-shadow: 0 0 15px orange;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #34495e;
+            border-radius: 30px;
+            padding: 15px;
+            flex: 1;
+            text-align: center;
+            border: 3px solid #f1c40f;
+        }
+
+        .stat-label {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: #f1c40f;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #2c3e50;
+            border-radius: 40px;
+            border: 6px solid #f1c40f;
+            box-shadow: 0 10px 0 #7f8c8d, 0 20px 20px rgba(0,0,0,0.3);
+            touch-action: none;
+            cursor: pointer;
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .puzzle-selector {
+            display: flex;
+            gap: 10px;
+            background: #34495e;
+            padding: 10px;
+            border-radius: 50px;
+            border: 3px solid #f1c40f;
+        }
+
+        .type-btn {
+            background: #2c3e50;
+            border: none;
+            color: #bdc3c7;
+            font-size: 1.2rem;
+            padding: 12px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.1s;
+        }
+
+        .type-btn.active {
+            background: #f1c40f;
+            color: #2c3e50;
+            box-shadow: 0 0 20px gold;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .gold-btn {
+            background: #f1c40f;
+            border: 4px solid #2c3e50;
+            color: #2c3e50;
+            font-size: 1.3rem;
+            padding: 12px 22px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #b7950b;
+            transition: 0.05s linear;
+        }
+
+        .gold-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #b7950b;
+        }
+
+        .hint-system {
+            background: #34495e;
+            border-radius: 30px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 3px solid #f1c40f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hint-text {
+            color: #ecf0f1;
+            font-size: 1.2rem;
+        }
+
+        .hint-cost {
+            background: #f1c40f;
+            color: #2c3e50;
+            padding: 8px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .pause-overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ecf0f1ee;
+            backdrop-filter: blur(10px);
+            border: 8px solid #f1c40f;
+            border-radius: 70px;
+            padding: 40px;
+            text-align: center;
+            z-index: 200;
+        }
+
+        .pause-overlay.show {
+            display: block;
+        }
+
+        .pause-overlay h2 {
+            color: #2c3e50;
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .gold-header { font-size: 2rem; }
+            .type-btn { font-size: 1rem; padding: 8px 12px; }
+            .level-num { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="gold-header">BRAIN TEASER</div>
+
+        <div class="level-bar">
+            <div class="level-info">
+                <div class="level-num" id="levelDisplay">1</div>
+                <div class="puzzle-type" id="typeDisplay">PATTERN</div>
+            </div>
+            <div class="stars" id="starDisplay">
+                <span class="star" id="star1">★</span>
+                <span class="star" id="star2">★</span>
+                <span class="star" id="star3">★</span>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">MOVES</div>
+                <div class="stat-value" id="movesDisplay">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">BEST</div>
+                <div class="stat-value" id="bestDisplay">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">STARS</div>
+                <div class="stat-value" id="totalStarsDisplay">0</div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="500" height="500"></canvas>
+
+        <div class="control-panel">
+            <div class="puzzle-selector">
+                <button class="type-btn active" id="typePattern">🧩 PATTERN</button>
+                <button class="type-btn" id="typeNumber">🔢 NUMBER</button>
+                <button class="type-btn" id="typeLight">💡 LIGHTS</button>
+                <button class="type-btn" id="typeColor">🎨 COLOR</button>
+            </div>
+            
+            <div class="action-btns">
+                <button class="gold-btn" id="undoBtn">↩️ UNDO</button>
+                <button class="gold-btn" id="resetBtn">🔄 RESET</button>
+            </div>
+        </div>
+
+        <div class="hint-system">
+            <span class="hint-text" id="hintMessage">Click hint to reveal (costs 1 star)</span>
+            <button class="hint-cost" id="hintBtn">💡 HINT</button>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+            <button class="gold-btn" id="prevBtn">◀ PREV</button>
+            <button class="gold-btn" id="nextBtn">NEXT ▶</button>
+            <button class="gold-btn" id="pauseBtn">⏸️ PAUSE</button>
+        </div>
+
+        <!-- Pause Menu -->
+        <div class="pause-overlay" id="pauseMenu">
+            <h2>⏸ PAUSED</h2>
+            <button class="gold-btn" id="resumeBtn" style="font-size:2rem; margin:10px;">▶ RESUME</button>
+            <button class="gold-btn" id="menuBtn">🏠 MENU</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== CONFIG ==========
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Game state
+            let currentLevel = 1;
+            let currentType = 'pattern'; // pattern, number, light, color
+            let moves = 0;
+            let stars = [false, false, false];
+            let totalStars = parseInt(localStorage.getItem('brainTeaserStars')) || 0;
+            
+            // Level data
+            let levelData = {};
+            let initialBoard = [];
+            let board = [];
+            let history = [];
+            
+            // Puzzle type definitions
+            const puzzleTypes = {
+                pattern: { name: 'PATTERN', icon: '🧩', levels: 15 },
+                number: { name: 'NUMBER CHAIN', icon: '🔢', levels: 15 },
+                light: { name: 'LIGHTS OUT', icon: '💡', levels: 10 },
+                color: { name: 'COLOR LOGIC', icon: '🎨', levels: 10 }
+            };
+            
+            // Best scores
+            let bestMoves = JSON.parse(localStorage.getItem('brainTeaserBest')) || {};
+            
+            // ========== LEVEL GENERATION ==========
+            function generateLevel(type, level) {
+                switch(type) {
+                    case 'pattern':
+                        return generatePatternLevel(level);
+                    case 'number':
+                        return generateNumberLevel(level);
+                    case 'light':
+                        return generateLightLevel(level);
+                    case 'color':
+                        return generateColorLevel(level);
+                }
+            }
+            
+            function generatePatternLevel(level) {
+                // Pattern completion: 4x4 grid with missing tile
+                const size = 4;
+                const patterns = [
+                    [1,2,3,4, 2,3,4,1, 3,4,1,2, 4,1,2,3], // rotating
+                    [1,1,2,2, 1,1,2,2, 3,3,4,4, 3,3,4,4], // quadrants
+                    [1,2,1,2, 3,4,3,4, 1,2,1,2, 3,4,3,4] // checker
+                ];
+                
+                const pattern = patterns[level % patterns.length];
+                const missingPos = Math.floor(Math.random() * 16);
+                const board = [...pattern];
+                const answer = board[missingPos];
+                board[missingPos] = 0; // empty
+                
+                return {
+                    size: size,
+                    board: board,
+                    answer: answer,
+                    type: 'pattern'
+                };
+            }
+            
+            function generateNumberLevel(level) {
+                // Number chain: connect numbers 1-n without crossing
+                const size = 5;
+                const pairs = Math.min(3 + Math.floor(level/3), 6);
+                let board = Array(size*size).fill(0);
+                
+                // Place number pairs
+                for (let i = 1; i <= pairs; i++) {
+                    let placed = 0;
+                    while (placed < 2) {
+                        const pos = Math.floor(Math.random() * size * size);
+                        if (board[pos] === 0) {
+                            board[pos] = i;
+                            placed++;
+                        }
+                    }
+                }
+                
+                return {
+                    size: size,
+                    board: board,
+                    pairs: pairs,
+                    type: 'number'
+                };
+            }
+            
+            function generateLightLevel(level) {
+                // Lights Out: 5x5 grid, turn all lights on
+                const size = 5;
+                let board = Array(size*size).fill(0);
+                
+                // Random initial configuration
+                for (let i = 0; i < size*size; i++) {
+                    board[i] = Math.random() < 0.3 ? 1 : 0;
+                }
+                
+                return {
+                    size: size,
+                    board: board,
+                    type: 'light'
+                };
+            }
+            
+            function generateColorLevel(level) {
+                // Color logic (Mastermind style)
+                const colors = ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠'];
+                const codeLength = 4;
+                const maxGuesses = 10;
+                
+                let secret = [];
+                for (let i = 0; i < codeLength; i++) {
+                    secret.push(Math.floor(Math.random() * colors.length));
+                }
+                
+                return {
+                    colors: colors,
+                    codeLength: codeLength,
+                    secret: secret,
+                    guesses: [],
+                    type: 'color'
+                };
+            }
+            
+            // ========== RENDERING ==========
+            function drawBoard() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw background
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                switch(currentType) {
+                    case 'pattern':
+                        drawPatternBoard();
+                        break;
+                    case 'number':
+                        drawNumberBoard();
+                        break;
+                    case 'light':
+                        drawLightBoard();
+                        break;
+                    case 'color':
+                        drawColorBoard();
+                        break;
+                }
+            }
+            
+            function drawPatternBoard() {
+                const data = levelData;
+                const size = data.size;
+                const cellSize = canvas.width / size;
+                
+                // Draw grid
+                ctx.strokeStyle = '#f1c40f';
+                ctx.lineWidth = 3;
+                
+                for (let i = 0; i <= size; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * cellSize, 0);
+                    ctx.lineTo(i * cellSize, canvas.height);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * cellSize);
+                    ctx.lineTo(canvas.width, i * cellSize);
+                    ctx.stroke();
+                }
+                
+                // Draw tiles
+                for (let i = 0; i < size * size; i++) {
+                    const row = Math.floor(i / size);
+                    const col = i % size;
+                    const x = col * cellSize;
+                    const y = row * cellSize;
+                    
+                    if (board[i] === 0) {
+                        // Empty tile - draw question mark
+                        ctx.fillStyle = '#ecf0f1';
+                        ctx.font = `bold ${cellSize/2}px monospace`;
+                        ctx.fillStyle = '#7f8c8d';
+                        ctx.fillText('?', x + cellSize/3, y + cellSize*0.7);
+                    } else {
+                        // Pattern tile
+                        ctx.fillStyle = getPatternColor(board[i]);
+                        ctx.fillRect(x + 5, y + 5, cellSize - 10, cellSize - 10);
+                        
+                        // Pattern number
+                        ctx.fillStyle = 'white';
+                        ctx.font = `bold ${cellSize/3}px monospace`;
+                        ctx.fillText(board[i], x + 10, y + 30);
+                    }
+                }
+            }
+            
+            function drawNumberBoard() {
+                const data = levelData;
+                const size = data.size;
+                const cellSize = canvas.width / size;
+                
+                // Draw grid
+                ctx.strokeStyle = '#f1c40f';
+                ctx.lineWidth = 3;
+                
+                for (let i = 0; i <= size; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * cellSize, 0);
+                    ctx.lineTo(i * cellSize, canvas.height);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * cellSize);
+                    ctx.lineTo(canvas.width, i * cellSize);
+                    ctx.stroke();
+                }
+                
+                // Draw numbers
+                for (let i = 0; i < size * size; i++) {
+                    if (board[i] > 0) {
+                        const row = Math.floor(i / size);
+                        const col = i % size;
+                        const x = col * cellSize;
+                        const y = row * cellSize;
+                        
+                        ctx.fillStyle = '#f1c40f';
+                        ctx.font = `bold ${cellSize/2}px monospace`;
+                        ctx.fillText(board[i], x + cellSize/3, y + cellSize*0.7);
+                    }
+                }
+            }
+            
+            function drawLightBoard() {
+                const data = levelData;
+                const size = data.size;
+                const cellSize = canvas.width / size;
+                
+                for (let i = 0; i < size * size; i++) {
+                    const row = Math.floor(i / size);
+                    const col = i % size;
+                    const x = col * cellSize;
+                    const y = row * cellSize;
+                    
+                    // Light bulb
+                    if (board[i] === 1) {
+                        // On
+                        ctx.fillStyle = '#f1c40f';
+                        ctx.shadowColor = 'yellow';
+                        ctx.shadowBlur = 30;
+                        ctx.beginPath();
+                        ctx.arc(x + cellSize/2, y + cellSize/2, cellSize/3, 0, Math.PI*2);
+                        ctx.fill();
+                    } else {
+                        // Off
+                        ctx.fillStyle = '#34495e';
+                        ctx.shadowBlur = 0;
+                        ctx.beginPath();
+                        ctx.arc(x + cellSize/2, y + cellSize/2, cellSize/3, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    
+                    // Bulb base
+                    ctx.fillStyle = '#7f8c8d';
+                    ctx.fillRect(x + cellSize/2 - 5, y + cellSize*0.7, 10, 15);
+                }
+                ctx.shadowBlur = 0;
+            }
+            
+            function drawColorBoard() {
+                const data = levelData;
+                const colors = data.colors;
+                const codeLength = data.codeLength;
+                const cellSize = canvas.width / 8;
+                
+                // Draw secret (hidden row)
+                ctx.fillStyle = '#34495e';
+                ctx.fillRect(0, 0, canvas.width, cellSize);
+                ctx.fillStyle = '#f1c40f';
+                ctx.font = 'bold 24px monospace';
+                ctx.fillText('???', 50, 40);
+                
+                // Draw guesses
+                data.guesses.forEach((guess, index) => {
+                    const y = (index + 1) * cellSize + 20;
+                    
+                    for (let i = 0; i < codeLength; i++) {
+                        const x = i * cellSize + 50;
+                        
+                        // Color circle
+                        ctx.fillStyle = colors[guess[i]];
+                        ctx.beginPath();
+                        ctx.arc(x, y, 20, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    
+                    // Feedback (correct position/color)
+                    let correct = 0;
+                    let correctColor = 0;
+                    const secretCopy = [...data.secret];
+                    const guessCopy = [...guess];
+                    
+                    for (let i = 0; i < codeLength; i++) {
+                        if (guess[i] === data.secret[i]) {
+                            correct++;
+                            secretCopy[i] = -1;
+                            guessCopy[i] = -2;
+                        }
+                    }
+                    
+                    for (let i = 0; i < codeLength; i++) {
+                        if (guessCopy[i] >= 0) {
+                            const pos = secretCopy.indexOf(guessCopy[i]);
+                            if (pos >= 0) {
+                                correctColor++;
+                                secretCopy[pos] = -1;
+                            }
+                        }
+                    }
+                    
+                    ctx.fillStyle = '#ecf0f1';
+                    ctx.font = '20px monospace';
+                    ctx.fillText('✓'.repeat(correct) + '○'.repeat(correctColor), 350, y + 10);
+                });
+            }
+            
+            function getPatternColor(val) {
+                const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
+                return colors[(val - 1) % colors.length];
+            }
+            
+            // ========== INTERACTION ==========
+            function handleCanvasClick(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scale = canvas.width / rect.width;
+                
+                let clientX, clientY;
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                const x = (clientX - rect.left) * scale;
+                const y = (clientY - rect.top) * scale;
+                
+                const data = levelData;
+                const size = data.size || 5;
+                const cellSize = canvas.width / size;
+                
+                const col = Math.floor(x / cellSize);
+                const row = Math.floor(y / cellSize);
+                const index = row * size + col;
+                
+                if (row >= 0 && row < size && col >= 0 && col < size) {
+                    saveHistory();
+                    
+                    switch(currentType) {
+                        case 'pattern':
+                            // Cycle through pattern options
+                            board[index] = (board[index] + 1) % 5;
+                            break;
+                        case 'number':
+                            // Toggle number selection
+                            // (simplified - would connect numbers in real version)
+                            break;
+                        case 'light':
+                            // Toggle light and neighbors
+                            toggleLight(index, size);
+                            break;
+                        case 'color':
+                            // Handle color selection (would open picker)
+                            break;
+                    }
+                    
+                    moves++;
+                    document.getElementById('movesDisplay').innerText = moves;
+                    checkWin();
+                    drawBoard();
+                }
+            }
+            
+            function toggleLight(index, size) {
+                const row = Math.floor(index / size);
+                const col = index % size;
+                
+                // Toggle clicked
+                board[index] = board[index] ? 0 : 1;
+                
+                // Toggle neighbors
+                const neighbors = [
+                    [row-1, col], [row+1, col], [row, col-1], [row, col+1]
+                ];
+                
+                neighbors.forEach(([r, c]) => {
+                    if (r >= 0 && r < size && c >= 0 && c < size) {
+                        const i = r * size + c;
+                        board[i] = board[i] ? 0 : 1;
+                    }
+                });
+            }
+            
+            function saveHistory() {
+                history.push([...board]);
+                if (history.length > 20) history.shift();
+            }
+            
+            function undo() {
+                if (history.length > 0) {
+                    board = history.pop();
+                    drawBoard();
+                }
+            }
+            
+            function resetLevel() {
+                board = [...initialBoard];
+                moves = 0;
+                history = [];
+                document.getElementById('movesDisplay').innerText = '0';
+                drawBoard();
+            }
+            
+            function checkWin() {
+                let solved = false;
+                
+                switch(currentType) {
+                    case 'pattern':
+                        // Check if pattern matches answer
+                        solved = board.every((val, i) => 
+                            val === levelData.answer || val === 0
+                        );
+                        break;
+                    case 'light':
+                        // All lights on
+                        solved = board.every(val => val === 1);
+                        break;
+                    case 'color':
+                        // Correct guess
+                        if (levelData.guesses.length > 0) {
+                            const lastGuess = levelData.guesses[levelData.guesses.length - 1];
+                            solved = lastGuess.every((val, i) => val === levelData.secret[i]);
+                        }
+                        break;
+                }
+                
+                if (solved) {
+                    // Calculate stars
+                    let starCount = 3;
+                    if (moves > levelData.parMoves * 1.5) starCount = 1;
+                    else if (moves > levelData.parMoves) starCount = 2;
+                    
+                    stars = [true, starCount >= 2, starCount >= 3];
+                    updateStarDisplay();
+                    
+                    // Save best score
+                    const key = `${currentType}_${currentLevel}`;
+                    if (!bestMoves[key] || moves < bestMoves[key]) {
+                        bestMoves[key] = moves;
+                        localStorage.setItem('brainTeaserBest', JSON.stringify(bestMoves));
+                    }
+                    
+                    // Show win message
+                    setTimeout(() => {
+                        alert(`Level Complete! ${starCount} Stars!`);
+                    }, 100);
+                }
+            }
+            
+            // ========== UI UPDATES ==========
+            function updateStarDisplay() {
+                document.getElementById('star1').className = stars[0] ? 'star active' : 'star';
+                document.getElementById('star2').className = stars[1] ? 'star active' : 'star';
+                document.getElementById('star3').className = stars[2] ? 'star active' : 'star';
+                
+                // Update total stars
+                totalStars = 0;
+                Object.keys(bestMoves).forEach(key => {
+                    const moves = bestMoves[key];
+                    if (moves < 10) totalStars += 3;
+                    else if (moves < 20) totalStars += 2;
+                    else totalStars += 1;
+                });
+                document.getElementById('totalStarsDisplay').innerText = totalStars;
+                localStorage.setItem('brainTeaserStars', totalStars);
+            }
+            
+            function loadLevel() {
+                levelData = generateLevel(currentType, currentLevel);
+                initialBoard = [...levelData.board];
+                board = [...initialBoard];
+                moves = 0;
+                history = [];
+                
+                document.getElementById('levelDisplay').innerText = currentLevel;
+                document.getElementById('typeDisplay').innerText = puzzleTypes[currentType].name;
+                document.getElementById('movesDisplay').innerText = '0';
+                
+                // Load best score
+                const key = `${currentType}_${currentLevel}`;
+                if (bestMoves[key]) {
+                    document.getElementById('bestDisplay').innerText = bestMoves[key];
+                } else {
+                    document.getElementById('bestDisplay').innerText = '-';
+                }
+                
+                drawBoard();
+            }
+            
+            // ========== HINT SYSTEM ==========
+            function useHint() {
+                if (totalStars < 1) {
+                    document.getElementById('hintMessage').innerText = 'Not enough stars!';
+                    return;
+                }
+                
+                totalStars--;
+                localStorage.setItem('brainTeaserStars', totalStars);
+                document.getElementById('totalStarsDisplay').innerText = totalStars;
+                
+                // Provide hint based on puzzle type
+                switch(currentType) {
+                    case 'pattern':
+                        document.getElementById('hintMessage').innerText = 
+                            `Look for the pattern: answer is ${levelData.answer}`;
+                        break;
+                    case 'light':
+                        const hintPos = board.findIndex(val => val === 0);
+                        document.getElementById('hintMessage').innerText = 
+                            `Try clicking at position ${Math.floor(hintPos/5)+1}, ${hintPos%5+1}`;
+                        break;
+                }
+            }
+            
+            // ========== EVENT LISTENERS ==========
+            canvas.addEventListener('click', handleCanvasClick);
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleCanvasClick(e);
+            }, { passive: false });
+            
+            document.getElementById('typePattern').addEventListener('click', () => {
+                currentType = 'pattern';
+                document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('typePattern').classList.add('active');
+                currentLevel = 1;
+                loadLevel();
+            });
+            
+            document.getElementById('typeNumber').addEventListener('click', () => {
+                currentType = 'number';
+                document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('typeNumber').classList.add('active');
+                currentLevel = 1;
+                loadLevel();
+            });
+            
+            document.getElementById('typeLight').addEventListener('click', () => {
+                currentType = 'light';
+                document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('typeLight').classList.add('active');
+                currentLevel = 1;
+                loadLevel();
+            });
+            
+            document.getElementById('typeColor').addEventListener('click', () => {
+                currentType = 'color';
+                document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById('typeColor').classList.add('active');
+                currentLevel = 1;
+                loadLevel();
+            });
+            
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('resetBtn').addEventListener('click', resetLevel);
+            document.getElementById('hintBtn').addEventListener('click', useHint);
+            
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if (currentLevel > 1) {
+                    currentLevel--;
+                    loadLevel();
+                }
+            });
+            
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                const maxLevel = puzzleTypes[currentType].levels;
+                if (currentLevel < maxLevel) {
+                    currentLevel++;
+                    loadLevel();
+                }
+            });
+            
+            // Pause functionality
+            let paused = false;
+            function togglePause() {
+                paused = !paused;
+                document.getElementById('pauseMenu').classList.toggle('show', paused);
+            }
+            
+            document.getElementById('pauseBtn').addEventListener('click', togglePause);
+            document.getElementById('resumeBtn').addEventListener('click', togglePause);
+            document.getElementById('menuBtn').addEventListener('click', () => {
+                togglePause();
+                // Return to main menu (reset to level 1 pattern)
+                currentType = 'pattern';
+                currentLevel = 1;
+                loadLevel();
+            });
+            
+            // ========== INIT ==========
+            function init() {
+                document.getElementById('totalStarsDisplay').innerText = totalStars;
+                loadLevel();
+            }
+            
+            init();
+        })();
+    </script>
+</body>
+</html>

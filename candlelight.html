@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CANDLELIGHT · SURVIVE THE DARK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0507;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+        }
+
+        .game-wrapper {
+            max-width: 700px;
+            width: 100%;
+            background: #1a0c0e;
+            border: 4px solid #b04f4f;
+            border-radius: 40px;
+            padding: 20px 15px 25px;
+            box-shadow: 0 0 50px #ff6600aa, inset 0 0 30px #ff444422;
+            position: relative;
+        }
+
+        .title-horror {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #ff9966;
+            text-shadow: 0 0 15px orange, 0 0 30px red, 2px 2px 0 #4a0000;
+            margin-bottom: 5px;
+            font-family: 'Creepy', 'Courier New', monospace;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ffaaa0;
+            text-shadow: 0 0 8px red;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        .stats-panel {
+            background: #2f1518;
+            border-radius: 40px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            border: 3px solid #b04f4f;
+            box-shadow: 0 0 30px #ff4444;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+            min-width: 70px;
+        }
+
+        .stat-label {
+            color: #ffbaba;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .stat-value {
+            color: #ffdd99;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 15px orange;
+            line-height: 1.2;
+        }
+
+        .candle-bar {
+            background: #2f1518;
+            border-radius: 30px;
+            padding: 12px;
+            border: 3px solid #b04f4f;
+            margin-bottom: 15px;
+        }
+
+        .candle-label {
+            color: #ffccaa;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .flame-bar-bg {
+            background: #3d1e1e;
+            height: 30px;
+            border-radius: 30px;
+            border: 2px solid #ff884d;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .flame-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ffaa33, #ff6633, #ff3333);
+            border-radius: 30px;
+            transition: width 0.2s;
+            box-shadow: 0 0 30px orange;
+        }
+
+        .stamina-bar-bg {
+            background: #3d1e1e;
+            height: 20px;
+            border-radius: 20px;
+            border: 2px solid #66ccff;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .stamina-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #66ccff, #3366ff);
+            border-radius: 20px;
+            transition: width 0.1s;
+        }
+
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #130b0b;
+            border-radius: 40px;
+            border: 4px solid #b04f4f;
+            box-shadow: 0 0 40px #ff0000aa, inset 0 0 30px #330000;
+            touch-action: none;
+            cursor: none;
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .direction-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 180px;
+            margin: 0 auto;
+        }
+
+        .dir-btn {
+            background: #2f1a1a;
+            border: 3px solid #b04f4f;
+            color: #ffaa88;
+            font-size: 2rem;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px red;
+            cursor: pointer;
+            transition: 0.1s;
+            touch-action: manipulation;
+        }
+
+        .dir-btn:active {
+            background: #6b2b2b;
+            transform: scale(0.9);
+            box-shadow: 0 0 30px orange;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            background: #2f1a1a;
+            border: 3px solid #ff6666;
+            color: #ffccaa;
+            font-size: 1.2rem;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: bold;
+            box-shadow: 0 0 20px red;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .game-btn:active {
+            background: #6b2b2b;
+            transform: scale(0.95);
+        }
+
+        .warning-message {
+            background: #330000;
+            color: #ff9999;
+            text-align: center;
+            padding: 10px;
+            border-radius: 30px;
+            border: 2px solid red;
+            font-size: 1rem;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; text-shadow: 0 0 10px red; }
+            100% { opacity: 0.7; }
+        }
+
+        .pause-overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1f0a0acc;
+            backdrop-filter: blur(8px);
+            border: 4px solid red;
+            border-radius: 50px;
+            padding: 35px;
+            text-align: center;
+            z-index: 100;
+            border: 3px solid #ff6666;
+        }
+
+        .pause-overlay.show {
+            display: block;
+        }
+
+        .pause-overlay h2 {
+            color: #ff8866;
+            font-size: 3rem;
+            text-shadow: 0 0 20px red;
+        }
+
+        .pause-btn {
+            background: #2f1a1a;
+            border: 2px solid red;
+            color: #ffaa88;
+            font-size: 1.8rem;
+            padding: 15px 35px;
+            margin: 15px;
+            border-radius: 60px;
+            width: 100%;
+        }
+
+        .leaderboard {
+            background: #2f1518;
+            border-radius: 30px;
+            padding: 15px;
+            border: 3px solid #b04f4f;
+            margin-top: 20px;
+        }
+
+        .leaderboard h3 {
+            color: #ffaaa0;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .leaderboard ol {
+            color: #ffccaa;
+            padding-left: 25px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 500px) {
+            .dir-btn { font-size: 1.5rem; }
+            .game-btn { font-size: 1rem; padding: 8px 16px; }
+            .title-horror { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="title-horror">CANDLELIGHT</div>
+        <div class="subtitle">keep the flame alive</div>
+
+        <div class="stats-panel">
+            <div class="stat">
+                <div class="stat-label">SURVIVED</div>
+                <div class="stat-value" id="timeDisplay">0s</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">MATCHES</div>
+                <div class="stat-value" id="matchesDisplay">3</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">SHADOWS</div>
+                <div class="stat-value" id="shadowsDisplay">0</div>
+            </div>
+        </div>
+
+        <div class="candle-bar">
+            <div class="candle-label">
+                <span>🕯️ FLAME</span>
+                <span id="flamePercent">100%</span>
+            </div>
+            <div class="flame-bar-bg">
+                <div class="flame-fill" id="flameFill" style="width: 100%;"></div>
+            </div>
+            <div class="candle-label" style="margin-top: 12px;">
+                <span>⚡ STAMINA</span>
+                <span id="staminaPercent">100%</span>
+            </div>
+            <div class="stamina-bar-bg">
+                <div class="stamina-fill" id="staminaFill" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+        <div class="control-panel">
+            <div class="direction-pad">
+                <div></div>
+                <div class="dir-btn" id="moveUp">▲</div>
+                <div></div>
+                <div class="dir-btn" id="moveLeft">◀</div>
+                <div class="dir-btn" id="moveDown">▼</div>
+                <div class="dir-btn" id="moveRight">▶</div>
+            </div>
+            
+            <div class="action-btns">
+                <button class="game-btn" id="pauseBtn">⏸️ PAUSE</button>
+                <button class="game-btn" id="restartBtn">🔄 RESTART</button>
+            </div>
+        </div>
+
+        <div class="warning-message" id="warningMsg">
+            💨 WIND GUSTS EXTINGUISH FLAME • SHADOWS HUNT IN DARKNESS
+        </div>
+
+        <div class="leaderboard">
+            <h3>🏆 SURVIVORS</h3>
+            <ol id="leaderboardList">
+                <li>??? - 0s</li>
+            </ol>
+        </div>
+
+        <div class="pause-overlay" id="pauseMenu">
+            <h2>⏸ PAUSED</h2>
+            <button class="game-btn pause-btn" id="resumeBtn">▶ RESUME</button>
+            <button class="game-btn pause-btn" id="restartFromPause">🔄 RESTART</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== CONFIG ==========
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Player
+            let player = {
+                x: 300,
+                y: 300,
+                radius: 12
+            };
+            
+            // Light system
+            let flameIntensity = 100; // 0-100
+            let lightRadius = 150; // base radius when flame = 100
+            const maxLightRadius = 200;
+            const minLightRadius = 30;
+            
+            // Stamina
+            let stamina = 100;
+            let isRunning = false;
+            let playerSpeed = 2.5;
+            const walkSpeed = 2.5;
+            const runSpeed = 5;
+            
+            // Matches
+            let matches = 3;
+            
+            // Shadows (enemies)
+            let shadows = [];
+            let shadowCount = 0;
+            
+            // Wind gusts
+            let windTimer = 0;
+            let windActive = false;
+            let windMessage = '';
+            
+            // Maze walls (simple obstacles)
+            let walls = [];
+            
+            // Collectible matches
+            let matchItems = [];
+            
+            // Score
+            let survivalTime = 0;
+            let highScore = localStorage.getItem('candleHighScore') || 0;
+            highScore = parseInt(highScore);
+            
+            // Leaderboard
+            let leaderboard = JSON.parse(localStorage.getItem('candleLeaderboard')) || [];
+            
+            // Game state
+            let gameOver = false;
+            let paused = false;
+            let gameLoop;
+            let animationFrame;
+            let timeInterval;
+            
+            // Movement flags
+            let moveUp = false, moveDown = false, moveLeft = false, moveRight = false;
+            
+            // ========== INIT MAZE ==========
+            function generateMaze() {
+                // Add some walls (static obstacles)
+                for (let i = 0; i < 8; i++) {
+                    walls.push({
+                        x: Math.random() * 500 + 50,
+                        y: Math.random() * 500 + 50,
+                        w: 30,
+                        h: 100 + Math.random() * 100
+                    });
+                    walls.push({
+                        x: Math.random() * 500 + 50,
+                        y: Math.random() * 500 + 50,
+                        w: 100 + Math.random() * 100,
+                        h: 30
+                    });
+                }
+            }
+            
+            function spawnMatch() {
+                if (matchItems.length < 5) {
+                    matchItems.push({
+                        x: Math.random() * 500 + 50,
+                        y: Math.random() * 500 + 50,
+                        collected: false
+                    });
+                }
+            }
+            
+            function spawnShadow() {
+                // Spawn from edge
+                const side = Math.floor(Math.random() * 4);
+                let x, y;
+                
+                switch(side) {
+                    case 0: x = Math.random() * canvas.width; y = -30; break;
+                    case 1: x = canvas.width + 30; y = Math.random() * canvas.height; break;
+                    case 2: x = Math.random() * canvas.width; y = canvas.height + 30; break;
+                    case 3: x = -30; y = Math.random() * canvas.height; break;
+                }
+                
+                shadows.push({
+                    x, y,
+                    speed: 1 + (survivalTime / 300),
+                    target: { x: player.x, y: player.y },
+                    size: 20,
+                    visible: false
+                });
+                
+                shadowCount = shadows.length;
+                document.getElementById('shadowsDisplay').innerText = shadowCount;
+            }
+            
+            // ========== UPDATE ==========
+            function updateGame() {
+                if (gameOver || paused) return;
+                
+                // Survival time
+                survivalTime += 0.1;
+                document.getElementById('timeDisplay').innerText = Math.floor(survivalTime) + 's';
+                
+                // Wind gusts (randomly blow out candle)
+                if (windTimer <= 0) {
+                    if (Math.random() < 0.02) { // 2% chance per frame
+                        windActive = true;
+                        windTimer = 30; // 0.5 seconds
+                        
+                        // Reduce flame by wind
+                        flameIntensity = Math.max(0, flameIntensity - 20);
+                        
+                        // Show warning
+                        windMessage = '💨 WIND GUST!';
+                        setTimeout(() => windMessage = '', 1000);
+                        
+                        // Check if candle died
+                        if (flameIntensity <= 0) {
+                            if (matches > 0) {
+                                // Use a match to relight
+                                matches--;
+                                flameIntensity = 80;
+                                document.getElementById('matchesDisplay').innerText = matches;
+                            } else {
+                                gameOver = true;
+                                updateLeaderboard(Math.floor(survivalTime));
+                            }
+                        }
+                    }
+                } else {
+                    windTimer--;
+                }
+                
+                // Natural flame decay
+                flameIntensity -= 0.05;
+                if (flameIntensity < 0) flameIntensity = 0;
+                
+                // Update light radius based on flame
+                lightRadius = minLightRadius + (flameIntensity / 100) * (maxLightRadius - minLightRadius);
+                
+                // Update displays
+                document.getElementById('flameFill').style.width = flameIntensity + '%';
+                document.getElementById('flamePercent').innerText = Math.floor(flameIntensity) + '%';
+                
+                // Stamina management
+                if (isRunning) {
+                    stamina -= 1;
+                    if (stamina < 0) stamina = 0;
+                    playerSpeed = runSpeed;
+                } else {
+                    stamina += 0.5;
+                    if (stamina > 100) stamina = 100;
+                    playerSpeed = walkSpeed;
+                }
+                document.getElementById('staminaFill').style.width = stamina + '%';
+                document.getElementById('staminaPercent').innerText = Math.floor(stamina) + '%';
+                
+                // Player movement
+                let dx = 0, dy = 0;
+                if (moveRight) dx += 1;
+                if (moveLeft) dx -= 1;
+                if (moveDown) dy += 1;
+                if (moveUp) dy -= 1;
+                
+                if (dx !== 0 || dy !== 0) {
+                    const len = Math.sqrt(dx*dx + dy*dy);
+                    dx = dx / len * playerSpeed;
+                    dy = dy / len * playerSpeed;
+                    
+                    // Try X movement
+                    let newX = player.x + dx;
+                    let newY = player.y;
+                    if (!checkCollision(newX, newY)) {
+                        player.x = newX;
+                    }
+                    
+                    // Try Y movement
+                    newX = player.x;
+                    newY = player.y + dy;
+                    if (!checkCollision(newX, newY)) {
+                        player.y = newY;
+                    }
+                    
+                    // Keep in bounds
+                    player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+                    player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+                }
+                
+                // Collect matches
+                matchItems.forEach(m => {
+                    if (!m.collected) {
+                        const dist = Math.hypot(player.x - m.x, player.y - m.y);
+                        if (dist < player.radius + 10) {
+                            m.collected = true;
+                            matches++;
+                            document.getElementById('matchesDisplay').innerText = matches;
+                        }
+                    }
+                });
+                
+                // Spawn shadows based on time
+                if (Math.random() < 0.01 + (survivalTime / 1000)) {
+                    spawnShadow();
+                }
+                
+                // Spawn matches occasionally
+                if (Math.random() < 0.005 && matchItems.length < 5) {
+                    spawnMatch();
+                }
+                
+                // Update shadows
+                shadows.forEach(s => {
+                    // Move toward player
+                    const angle = Math.atan2(player.y - s.y, player.x - s.x);
+                    s.x += Math.cos(angle) * s.speed;
+                    s.y += Math.sin(angle) * s.speed;
+                    
+                    // Check if shadow is in light
+                    const distToPlayer = Math.hypot(s.x - player.x, s.y - player.y);
+                    const inLight = distToPlayer < lightRadius;
+                    
+                    if (inLight) {
+                        s.visible = true;
+                        // Shadows are slower in light
+                        s.speed = 0.5;
+                    } else {
+                        s.visible = false;
+                        s.speed = 1.5 + (survivalTime / 200);
+                    }
+                    
+                    // Check collision with player
+                    if (distToPlayer < player.radius + s.size/2) {
+                        // Shadow caught player
+                        if (inLight) {
+                            // Shadow dissipates if in light
+                            shadows = shadows.filter(sh => sh !== s);
+                        } else {
+                            // In darkness - take damage
+                            if (flameIntensity > 0) {
+                                flameIntensity -= 30;
+                                if (flameIntensity < 0) flameIntensity = 0;
+                                
+                                // Shadow recoils
+                                s.x -= Math.cos(angle) * 50;
+                                s.y -= Math.sin(angle) * 50;
+                            } else {
+                                // No flame - game over
+                                gameOver = true;
+                                updateLeaderboard(Math.floor(survivalTime));
+                            }
+                        }
+                    }
+                });
+                
+                // Remove off-screen shadows
+                shadows = shadows.filter(s => 
+                    s.x > -100 && s.x < canvas.width + 100 && 
+                    s.y > -100 && s.y < canvas.height + 100
+                );
+                
+                shadowCount = shadows.length;
+                document.getElementById('shadowsDisplay').innerText = shadowCount;
+                
+                // Check if candle died
+                if (flameIntensity <= 0) {
+                    if (matches > 0) {
+                        matches--;
+                        flameIntensity = 80;
+                        document.getElementById('matchesDisplay').innerText = matches;
+                    } else {
+                        gameOver = true;
+                        updateLeaderboard(Math.floor(survivalTime));
+                    }
+                }
+            }
+            
+            function checkCollision(x, y) {
+                for (let w of walls) {
+                    if (x > w.x - player.radius && x < w.x + w.w + player.radius &&
+                        y > w.y - player.radius && y < w.y + w.h + player.radius) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            // ========== RENDERING ==========
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw darkness (everything outside light radius)
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Save context for light mask
+                ctx.save();
+                
+                // Draw light gradient (visible area)
+                let gradient = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, lightRadius);
+                gradient.addColorStop(0, 'rgba(255, 200, 100, 0.9)');
+                gradient.addColorStop(0.6, 'rgba(255, 100, 50, 0.5)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, lightRadius, 0, Math.PI*2);
+                ctx.fill();
+                
+                ctx.restore();
+                
+                // Draw walls (visible only in light)
+                walls.forEach(w => {
+                    // Check if wall is near player (optimization)
+                    const distToPlayer = Math.hypot(player.x - (w.x + w.w/2), player.y - (w.y + w.h/2));
+                    if (distToPlayer < lightRadius + 100) {
+                        ctx.fillStyle = '#5a3a3a';
+                        ctx.shadowColor = '#ffaa33';
+                        ctx.shadowBlur = 20;
+                        ctx.fillRect(w.x, w.y, w.w, w.h);
+                    }
+                });
+                
+                // Draw match items
+                matchItems.forEach(m => {
+                    if (!m.collected) {
+                        const dist = Math.hypot(player.x - m.x, player.y - m.y);
+                        if (dist < lightRadius + 50) {
+                            ctx.fillStyle = '#ffdd44';
+                            ctx.shadowColor = 'yellow';
+                            ctx.shadowBlur = 30;
+                            ctx.beginPath();
+                            ctx.arc(m.x, m.y, 8, 0, Math.PI*2);
+                            ctx.fill();
+                            ctx.fillStyle = '#aa8822';
+                            ctx.font = 'bold 16px monospace';
+                            ctx.fillText('🕯️', m.x-12, m.y-12);
+                        }
+                    }
+                });
+                
+                // Draw shadows (visible only in light)
+                shadows.forEach(s => {
+                    const distToPlayer = Math.hypot(s.x - player.x, s.y - player.y);
+                    if (distToPlayer < lightRadius + 50) {
+                        // Shadow appearance
+                        ctx.fillStyle = '#330022';
+                        ctx.shadowColor = 'purple';
+                        ctx.shadowBlur = 30;
+                        
+                        // Wispy shadow shape
+                        ctx.beginPath();
+                        ctx.ellipse(s.x, s.y, s.size, s.size*1.2, 0, 0, Math.PI*2);
+                        ctx.fill();
+                        
+                        // Eyes if in light
+                        if (distToPlayer < lightRadius) {
+                            ctx.fillStyle = '#ff0000';
+                            ctx.shadowBlur = 20;
+                            ctx.beginPath();
+                            ctx.arc(s.x-5, s.y-4, 3, 0, Math.PI*2);
+                            ctx.arc(s.x+5, s.y-4, 3, 0, Math.PI*2);
+                            ctx.fill();
+                        }
+                    }
+                });
+                
+                // Draw player (candle)
+                ctx.shadowColor = '#ffaa33';
+                ctx.shadowBlur = 40;
+                
+                // Candle flame
+                const flameHeight = 20 + Math.random() * 5;
+                ctx.fillStyle = '#ffaa33';
+                ctx.beginPath();
+                ctx.moveTo(player.x, player.y - 20);
+                ctx.lineTo(player.x - 8, player.y);
+                ctx.lineTo(player.x + 8, player.y);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.fillStyle = '#ff6633';
+                ctx.beginPath();
+                ctx.moveTo(player.x, player.y - 25);
+                ctx.lineTo(player.x - 5, player.y - 5);
+                ctx.lineTo(player.x + 5, player.y - 5);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Candle body
+                ctx.fillStyle = '#eedd99';
+                ctx.shadowBlur = 20;
+                ctx.fillRect(player.x-6, player.y-5, 12, 15);
+                
+                // Wind warning
+                if (windMessage) {
+                    ctx.fillStyle = '#ff0000';
+                    ctx.font = 'bold 30px monospace';
+                    ctx.shadowBlur = 40;
+                    ctx.fillText(windMessage, 200, 200);
+                }
+                
+                // Game over overlay
+                if (gameOver) {
+                    ctx.fillStyle = '#000000aa';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#ff6666';
+                    ctx.font = 'bold 40px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('GONE OUT', canvas.width/2, canvas.height/2);
+                    ctx.font = '20px monospace';
+                    ctx.fillText('survived ' + Math.floor(survivalTime) + 's', canvas.width/2, canvas.height/2 + 50);
+                }
+                
+                ctx.shadowBlur = 0;
+                animationFrame = requestAnimationFrame(draw);
+            }
+            
+            // ========== LEADERBOARD ==========
+            function updateLeaderboard(finalTime) {
+                leaderboard.push(finalTime);
+                leaderboard.sort((a,b) => b - a);
+                leaderboard = leaderboard.slice(0, 5);
+                localStorage.setItem('candleLeaderboard', JSON.stringify(leaderboard));
+                
+                if (finalTime > highScore) {
+                    highScore = finalTime;
+                    localStorage.setItem('candleHighScore', highScore);
+                }
+                
+                renderLeaderboard();
+            }
+            
+            function renderLeaderboard() {
+                const list = document.getElementById('leaderboardList');
+                if (leaderboard.length === 0) {
+                    list.innerHTML = '<li>??? - 0s</li>';
+                } else {
+                    list.innerHTML = leaderboard.map(s => `<li>👤 ${s}s</li>`).join('');
+                }
+            }
+            
+            // ========== CONTROLS ==========
+            document.getElementById('moveUp').addEventListener('mousedown', () => moveUp = true);
+            document.getElementById('moveUp').addEventListener('mouseup', () => moveUp = false);
+            document.getElementById('moveUp').addEventListener('mouseleave', () => moveUp = false);
+            document.getElementById('moveDown').addEventListener('mousedown', () => moveDown = true);
+            document.getElementById('moveDown').addEventListener('mouseup', () => moveDown = false);
+            document.getElementById('moveDown').addEventListener('mouseleave', () => moveDown = false);
+            document.getElementById('moveLeft').addEventListener('mousedown', () => moveLeft = true);
+            document.getElementById('moveLeft').addEventListener('mouseup', () => moveLeft = false);
+            document.getElementById('moveLeft').addEventListener('mouseleave', () => moveLeft = false);
+            document.getElementById('moveRight').addEventListener('mousedown', () => moveRight = true);
+            document.getElementById('moveRight').addEventListener('mouseup', () => moveRight = false);
+            document.getElementById('moveRight').addEventListener('mouseleave', () => moveRight = false);
+            
+            // Touch events
+            ['moveUp', 'moveDown', 'moveLeft', 'moveRight'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (id === 'moveUp') moveUp = true;
+                    if (id === 'moveDown') moveDown = true;
+                    if (id === 'moveLeft') moveLeft = true;
+                    if (id === 'moveRight') moveRight = true;
+                });
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    if (id === 'moveUp') moveUp = false;
+                    if (id === 'moveDown') moveDown = false;
+                    if (id === 'moveLeft') moveLeft = false;
+                    if (id === 'moveRight') moveRight = false;
+                });
+            });
+            
+            // Run toggle (double-click or shift)
+            canvas.addEventListener('dblclick', () => isRunning = true);
+            canvas.addEventListener('mouseup', () => isRunning = false);
+            canvas.addEventListener('touchend', () => isRunning = false);
+            
+            window.addEventListener('keydown', (e) => {
+                const key = e.key;
+                e.preventDefault();
+                if (key === 'ArrowUp') moveUp = true;
+                if (key === 'ArrowDown') moveDown = true;
+                if (key === 'ArrowLeft') moveLeft = true;
+                if (key === 'ArrowRight') moveRight = true;
+                if (key === 'Shift') isRunning = true;
+                if (key === 'p' || key === ' ') togglePause();
+            });
+            
+            window.addEventListener('keyup', (e) => {
+                const key = e.key;
+                if (key === 'ArrowUp') moveUp = false;
+                if (key === 'ArrowDown') moveDown = false;
+                if (key === 'ArrowLeft') moveLeft = false;
+                if (key === 'ArrowRight') moveRight = false;
+                if (key === 'Shift') isRunning = false;
+            });
+            
+            function togglePause() {
+                paused = !paused;
+                document.getElementById('pauseMenu').classList.toggle('show', paused);
+                document.getElementById('pauseBtn').innerText = paused ? '▶️ RESUME' : '⏸️ PAUSE';
+            }
+            
+            document.getElementById('pauseBtn').addEventListener('click', togglePause);
+            document.getElementById('resumeBtn').addEventListener('click', togglePause);
+            
+            function restartGame() {
+                // Reset all state
+                player = { x: 300, y: 300, radius: 12 };
+                flameIntensity = 100;
+                stamina = 100;
+                matches = 3;
+                shadows = [];
+                matchItems = [];
+                survivalTime = 0;
+                gameOver = false;
+                paused = false;
+                
+                generateMaze();
+                
+                // Initial matches
+                for (let i = 0; i < 3; i++) {
+                    spawnMatch();
+                }
+                
+                document.getElementById('timeDisplay').innerText = '0s';
+                document.getElementById('matchesDisplay').innerText = '3';
+                document.getElementById('shadowsDisplay').innerText = '0';
+                document.getElementById('flameFill').style.width = '100%';
+                document.getElementById('flamePercent').innerText = '100%';
+                document.getElementById('staminaFill').style.width = '100%';
+                document.getElementById('staminaPercent').innerText = '100%';
+                document.getElementById('pauseMenu').classList.remove('show');
+                document.getElementById('pauseBtn').innerText = '⏸️ PAUSE';
+            }
+            
+            document.getElementById('restartBtn').addEventListener('click', restartGame);
+            document.getElementById('restartFromPause').addEventListener('click', restartGame);
+            
+            // ========== START GAME ==========
+            function init() {
+                generateMaze();
+                renderLeaderboard();
+                
+                // Initial matches
+                for (let i = 0; i < 3; i++) {
+                    spawnMatch();
+                }
+                
+                gameLoop = setInterval(() => updateGame(), 1000/60);
+                draw();
+            }
+            
+            init();
+            
+            window.addEventListener('beforeunload', () => {
+                clearInterval(gameLoop);
+                cancelAnimationFrame(animationFrame);
+            });
+        })();
+    </script>
+</body>
+</html>
