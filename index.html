@@ -1,19 +1,530 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Last Breath Arcade Zone</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arcade Zone - Free HTML5 Games</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    font-family: 'Exo 2', sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background particles */
+  .particles {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(120, 0, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(0, 200, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 30px 0;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #00d4ff, #9d00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    letter-spacing: 2px;
+  }
+
+  nav {
+    display: flex;
+    gap: 30px;
+  }
+
+  nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00d4ff, #9d00ff);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  nav a:hover { color: #00d4ff; }
+  nav a:hover::after { transform: scaleX(1); }
+
+  /* Hero section */
+  .hero {
+    position: relative;
+    z-index: 5;
+    max-width: 1200px;
+    margin: 60px auto 40px;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 56px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    text-shadow: 0 0 40px rgba(157, 0, 255, 0.6);
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 20px rgba(157, 0, 255, 0.4); }
+    to { text-shadow: 0 0 40px rgba(157, 0, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.4); }
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: #aaa;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+  }
+
+  .search-bar {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 50px;
+    color: #fff;
+    font-size: 16px;
+    font-family: 'Exo 2', sans-serif;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .search-bar input:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+
+  .search-bar input::placeholder { color: #666; }
+
+  /* Games grid */
+  .games-container {
+    position: relative;
+    z-index: 5;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
+
+  .category-section {
+    margin-bottom: 60px;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 16px;
+  }
+
+  .category-header h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .category-header .line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent);
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 30px;
+  }
+
+  .game-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(157,0,255,0.1), rgba(0,212,255,0.1));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .game-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(0, 212, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+  }
+
+  .game-card:hover::before { opacity: 1; }
+
+  .game-thumb {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    overflow: hidden;
+  }
+
+  .game-thumb::after {
+    content: 'PLAY';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #00d4ff;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .game-card:hover .game-thumb::after { opacity: 1; }
+
+  .game-info {
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .game-info h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .game-info p {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .game-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    background: rgba(157,0,255,0.2);
+    border: 1px solid rgba(157,0,255,0.4);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: #c084fc;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 5;
+    margin-top: 100px;
+    padding: 40px 20px;
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+  }
+
+  footer p {
+    color: #666;
+    font-size: 14px;
+  }
+
+  footer a {
+    color: #00d4ff;
+    text-decoration: none;
+  }
+
+  footer a:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .logo { font-size: 28px; }
+    nav { display: none; }
+    .games-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  }
+</style>
 </head>
 <body>
-    <h1>Welcome to the Arcade Zone!</h1>
-    <div class="arcade-zone">
-        <div class="game-card" onclick="location.href='candlelight.html';">Candlelight</div>
-        <div class="game-card" onclick="location.href='rapid-fire.html';">Rapid Fire</div>
-        <div class="game-card" onclick="location.href='brawler.html';">Brawler</div>
-        <div class="game-card" onclick="location.href='blockmaster.html';">Block Master</div>
-        <div class="game-card" onclick="location.href='brainteaser.html';">Brainteaser</div>
-        <div class="game-card" onclick="location.href='snakeneon.html';">Snake Neon</div>
-        <div class="game-card" onclick="location.href='astroidrunner.html';">Astroid Runner</div>
-        <div class="game-card" onclick="location.href='last-breath-horror.html';">Last Breath Horror</div>
-        <div class="game-card" onclick="location.href='miner.html';">Miner</div>
+
+<div class="particles"></div>
+
+<header>
+  <div class="header-content">
+    <div class="logo">⚡ ARCADE ZONE</div>
+    <nav>
+      <a href="#action">Action</a>
+      <a href="#puzzle">Puzzle</a>
+      <a href="#horror">Horror</a>
+      <a href="#arcade">Arcade</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Play Free HTML5 Games</h1>
+  <p>Instant play. No downloads. No ads. Just pure gaming fun straight from your browser.</p>
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Search for games...">
+  </div>
+</section>
+
+<main class="games-container">
+  
+  <!-- HORROR GAMES -->
+  <section class="category-section" id="horror">
+    <div class="category-header">
+      <h2>👁️ Horror Games</h2>
+      <div class="line"></div>
     </div>
+    <div class="games-grid">
+      
+      <div class="game-card" onclick="window.open('last-breath-horror.html', '_blank')">
+        <div class="game-thumb">👁️</div>
+        <div class="game-info">
+          <h3>LAST BREATH</h3>
+          <p>Survive the maze. Find the key. The door and monster relocate randomly.</p>
+          <div class="game-tags">
+            <span class="tag">Horror</span>
+            <span class="tag">Survival</span>
+            <span class="tag">Maze</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="window.open('candlelight.html', '_blank')">
+        <div class="game-thumb">🕯️</div>
+        <div class="game-info">
+          <h3>CANDLELIGHT</h3>
+          <p>Navigate dark mazes, keep your flame alive, escape the shadows.</p>
+          <div class="game-tags">
+            <span class="tag">Horror</span>
+            <span class="tag">Stealth</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ACTION GAMES -->
+  <section class="category-section" id="action">
+    <div class="category-header">
+      <h2>⚔️ Action Games</h2>
+      <div class="line"></div>
+    </div>
+    <div class="games-grid">
+      
+      <div class="game-card" onclick="window.open('rapid-fire.html', '_blank')">
+        <div class="game-thumb">🎯</div>
+        <div class="game-info">
+          <h3>RAPID FIRE</h3>
+          <p>Fast-paced top-down shooter with waves of enemies and power-ups.</p>
+          <div class="game-tags">
+            <span class="tag">Action</span>
+            <span class="tag">Shooter</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="window.open('brawler.html', '_blank')">
+        <div class="game-thumb">🥊</div>
+        <div class="game-info">
+          <h3>BRAWLER</h3>
+          <p>Side-scrolling beat 'em up with combos and epic boss battles.</p>
+          <div class="game-tags">
+            <span class="tag">Action</span>
+            <span class="tag">Fighting</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PUZZLE GAMES -->
+  <section class="category-section" id="puzzle">
+    <div class="category-header">
+      <h2>🧩 Puzzle Games</h2>
+      <div class="line"></div>
+    </div>
+    <div class="games-grid">
+      
+      <div class="game-card" onclick="window.open('blockmaster.html', '_blank')">
+        <div class="game-thumb">🎲</div>
+        <div class="game-info">
+          <h3>BLOCK MASTER</h3>
+          <p>Match-3 puzzle with special combos, power-ups, and timed challenges.</p>
+          <div class="game-tags">
+            <span class="tag">Puzzle</span>
+            <span class="tag">Match-3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="window.open('brainteaser.html', '_blank')">
+        <div class="game-thumb">🧠</div>
+        <div class="game-info">
+          <h3>BRAIN TEASER</h3>
+          <p>Mind-bending logic puzzles with multiple challenge types.</p>
+          <div class="game-tags">
+            <span class="tag">Puzzle</span>
+            <span class="tag">Logic</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ARCADE GAMES -->
+  <section class="category-section" id="arcade">
+    <div class="category-header">
+      <h2>🕹️ Arcade Classics</h2>
+      <div class="line"></div>
+    </div>
+    <div class="games-grid">
+       
+      <div class="game-card" onclick="window.open('miner.html', '_blank')">
+      <div class="game-thumb">🚀</div>
+      <div class="game-info">
+        <h3>Neon Miner</h3>
+        <p>Classic miner game where you drill for resources before times up.</p>
+        <div class="game-tags">
+          <span class="tag">Arcade</span>
+          <span class="tag">Classic</span>
+        </div>
+      </div>
+    </div>
+      
+      <div class="game-card" onclick="window.open('snakeneon.html', '_blank')">
+        <div class="game-thumb">🐍</div>
+        <div class="game-info">
+          <h3>SNAKE NEON</h3>
+          <p>Classic snake with cyberpunk graphics, power-ups, and obstacles.</p>
+          <div class="game-tags">
+            <span class="tag">Arcade</span>
+            <span class="tag">Classic</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="window.open('asteroidrunner.html', '_blank')">
+        <div class="game-thumb">🚀</div>
+        <div class="game-info">
+          <h3>ASTEROID RUNNER</h3>
+          <p>Endless space shooter with power-ups and epic boss battles.</p>
+          <div class="game-tags">
+            <span class="tag">Arcade</span>
+            <span class="tag">Space</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 Arcade Zone. All games are free to play. Built with HTML5. <a href="https://github.com/yourusername/arcade-zone" target="_blank">View on GitHub</a></p>
+</footer>
+
+<script>
+// Search functionality
+const searchInput = document.getElementById('search');
+const gameCards = document.querySelectorAll('.game-card');
+
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  
+  gameCards.forEach(card => {
+    const title = card.querySelector('h3').textContent.toLowerCase();
+    const desc = card.querySelector('p').textContent.toLowerCase();
+    const tags = Array.from(card.querySelectorAll('.tag')).map(t => t.textContent.toLowerCase()).join(' ');
+    
+    if (title.includes(query) || desc.includes(query) || tags.includes(query)) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+
 </body>
 </html>
